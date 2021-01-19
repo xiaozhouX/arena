@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -399,7 +400,7 @@ func (st *SparkJobTrainer) getTrainingJob(name, namespace string) (job TrainingJ
 		sparkjob = sparkjobList.Items[0]
 	}
 
-	podList, err := st.client.CoreV1().Pods(namespace).List(metav1.ListOptions{
+	podList, err := st.client.CoreV1().Pods(namespace).List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ListOptions",
 			APIVersion: "v1",

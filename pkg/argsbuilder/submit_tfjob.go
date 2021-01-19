@@ -14,6 +14,7 @@
 package argsbuilder
 
 import (
+	"context"
 	"fmt"
 	"reflect"
 	"strings"
@@ -273,7 +274,7 @@ func (s *SubmitTFJobArgsBuilder) transform() error {
 func (s *SubmitTFJobArgsBuilder) checkGangCapablitiesInCluster() error {
 	s.args.HasGangScheduler = false
 	arenaConfiger := config.GetArenaConfiger()
-	_, err := arenaConfiger.GetClientSet().AppsV1beta1().Deployments(metav1.NamespaceSystem).Get(gangSchdName, metav1.GetOptions{})
+	_, err := arenaConfiger.GetClientSet().AppsV1beta1().Deployments(metav1.NamespaceSystem).Get(context.Background(), gangSchdName, metav1.GetOptions{})
 	if err != nil {
 		log.Debugf("Failed to find %s due to %v", gangSchdName, err)
 		return nil

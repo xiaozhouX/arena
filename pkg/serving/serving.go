@@ -1,6 +1,7 @@
 package serving
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"strings"
@@ -311,7 +312,7 @@ func (p *processer) FilterServingJobs(namespace string, allNamespace bool, filte
 		namespace = metav1.NamespaceAll
 	}
 	// 1.get deployment
-	deploymentList, err := p.client.AppsV1().Deployments(namespace).List(metav1.ListOptions{
+	deploymentList, err := p.client.AppsV1().Deployments(namespace).List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind: "ListOptions",
 		}, LabelSelector: filter,
@@ -328,7 +329,7 @@ func (p *processer) FilterServingJobs(namespace string, allNamespace bool, filte
 			servingTypeLabelKey, p.processerType,
 		)
 		// 2.get pods
-		podList, err := p.client.CoreV1().Pods(deployment.Namespace).List(metav1.ListOptions{
+		podList, err := p.client.CoreV1().Pods(deployment.Namespace).List(context.Background(), metav1.ListOptions{
 			TypeMeta: metav1.TypeMeta{
 				Kind:       "ListOptions",
 				APIVersion: "v1",
@@ -342,7 +343,7 @@ func (p *processer) FilterServingJobs(namespace string, allNamespace bool, filte
 			pods = append(pods, pod.DeepCopy())
 		}
 		// 3.get services
-		serviceList, err := p.client.CoreV1().Services(deployment.Namespace).List(metav1.ListOptions{
+		serviceList, err := p.client.CoreV1().Services(deployment.Namespace).List(context.Background(), metav1.ListOptions{
 			TypeMeta: metav1.TypeMeta{
 				Kind:       "ListOptions",
 				APIVersion: "v1",
@@ -376,7 +377,7 @@ func (p *processer) getIstioGatewayService() []*v1.Service {
 	if !p.useIstioGateway {
 		return istioServices
 	}
-	istioServiceList, err := p.client.CoreV1().Services(metav1.NamespaceAll).List(metav1.ListOptions{
+	istioServiceList, err := p.client.CoreV1().Services(metav1.NamespaceAll).List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ListOptions",
 			APIVersion: "v1",

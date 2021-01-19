@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"sort"
@@ -146,7 +147,7 @@ func QueryMetricByPrometheus(client *kubernetes.Clientset, prometheusServiceName
 		"time":  strconv.FormatInt(time.Now().Unix(), 10),
 	})
 	log.Debugf("Query prometheus for by %s in ns %s", query, namespace)
-	metric, err := req.DoRaw()
+	metric, err := req.DoRaw(context.Background())
 	if err != nil {
 		log.Debugf("Query prometheus failed due to err %v", err)
 		log.Debugf("Query prometheus failed due to result %s", string(metric))
@@ -229,7 +230,7 @@ func GetPrometheusServiceName(client *kubernetes.Clientset) (name string, ns str
 }
 
 func getPrometheusServiceName(client *kubernetes.Clientset, namespace string) (name string) {
-	services, err := client.CoreV1().Services(namespace).List(metav1.ListOptions{
+	services, err := client.CoreV1().Services(namespace).List(context.Background(), metav1.ListOptions{
 		LabelSelector: PROMETHEUS_SVC_LABEL,
 	})
 	if err != nil {

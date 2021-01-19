@@ -15,6 +15,7 @@
 package commands
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -64,7 +65,7 @@ func NewDataListCommand() *cobra.Command {
 			if allNamespaces {
 				namespace = metav1.NamespaceAll
 			}
-			pvcList, err = clientset.CoreV1().PersistentVolumeClaims(namespace).List(metav1.ListOptions{})
+			pvcList, err = clientset.CoreV1().PersistentVolumeClaims(namespace).List(context.Background(), metav1.ListOptions{})
 			if err != nil {
 				log.Debugf("Failed to list data volume due to %v", err)
 			}

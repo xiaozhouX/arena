@@ -15,6 +15,7 @@
 package training
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"time"
@@ -333,7 +334,7 @@ func (st *VolcanoJobTrainer) getTrainingJob(name, namespace string) (TrainingJob
 		return nil, err
 	}
 	// get the pods from the api server
-	podList, err := st.client.CoreV1().Pods(namespace).List(metav1.ListOptions{
+	podList, err := st.client.CoreV1().Pods(namespace).List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ListOptions",
 			APIVersion: "v1",
@@ -382,7 +383,7 @@ func (st *VolcanoJobTrainer) listFromAPIServer(namespace string, allNamespace bo
 	for _, item := range jobList.Items {
 		job := item.DeepCopy()
 		// get the pods from the api server
-		podList, err := st.client.CoreV1().Pods(job.Namespace).List(metav1.ListOptions{
+		podList, err := st.client.CoreV1().Pods(job.Namespace).List(context.Background(), metav1.ListOptions{
 			TypeMeta: metav1.TypeMeta{
 				Kind:       "ListOptions",
 				APIVersion: "v1",

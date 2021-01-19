@@ -1,6 +1,7 @@
 package podlogs
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -69,7 +70,7 @@ func (p *PodLogger) getLogs(accept func(io.ReadCloser)) error {
 		SinceSeconds: p.SinceSeconds,
 		SinceTime:    p.SinceTime,
 		TailLines:    p.Tail,
-	}).Stream()
+	}).Stream(context.Background())
 
 	if err != nil {
 		return err
@@ -81,7 +82,7 @@ func (p *PodLogger) getLogs(accept func(io.ReadCloser)) error {
 
 func (p *PodLogger) ensureContainerStarted() error {
 	for p.RetryCnt > 0 {
-		pod, err := p.clientset.CoreV1().Pods(p.Namespace).Get(p.InstanceName, metav1.GetOptions{})
+		pod, err := p.clientset.CoreV1().Pods(p.Namespace).Get(context.Background(), p.InstanceName, metav1.GetOptions{})
 		if err != nil {
 			return err
 		}

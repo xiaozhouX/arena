@@ -15,6 +15,7 @@
 package commands
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strconv"
@@ -109,7 +110,7 @@ func newNodeDescriber(client *kubernetes.Clientset, pods []v1.Pod) *NodeDescribe
 func (d *NodeDescriber) getAllNodeInfos() ([]NodeInfo, error) {
 	nodeInfoList := []NodeInfo{}
 
-	nodeList, err := d.client.CoreV1().Nodes().List(metav1.ListOptions{})
+	nodeList, err := d.client.CoreV1().Nodes().List(context.Background(), metav1.ListOptions{})
 
 	if err != nil {
 		return nodeInfoList, err

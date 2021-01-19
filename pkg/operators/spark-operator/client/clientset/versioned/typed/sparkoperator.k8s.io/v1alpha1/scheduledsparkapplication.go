@@ -21,6 +21,7 @@ limitations under the License.
 package v1alpha1
 
 import (
+	"context"
 	v1alpha1 "github.com/kubeflow/arena/pkg/operators/spark-operator/apis/sparkoperator.k8s.io/v1alpha1"
 	scheme "github.com/kubeflow/arena/pkg/operators/spark-operator/client/clientset/versioned/scheme"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -70,7 +71,7 @@ func (c *scheduledSparkApplications) Get(name string, options v1.GetOptions) (re
 		Resource("scheduledsparkapplications").
 		Name(name).
 		VersionedParams(&options, scheme.ParameterCodec).
-		Do().
+		Do(context.Background()).
 		Into(result)
 	return
 }
@@ -82,7 +83,7 @@ func (c *scheduledSparkApplications) List(opts v1.ListOptions) (result *v1alpha1
 		Namespace(c.ns).
 		Resource("scheduledsparkapplications").
 		VersionedParams(&opts, scheme.ParameterCodec).
-		Do().
+		Do(context.Background()).
 		Into(result)
 	return
 }
@@ -94,7 +95,7 @@ func (c *scheduledSparkApplications) Watch(opts v1.ListOptions) (watch.Interface
 		Namespace(c.ns).
 		Resource("scheduledsparkapplications").
 		VersionedParams(&opts, scheme.ParameterCodec).
-		Watch()
+		Watch(context.Background())
 }
 
 // Create takes the representation of a scheduledSparkApplication and creates it.  Returns the server's representation of the scheduledSparkApplication, and an error, if there is any.
@@ -104,7 +105,7 @@ func (c *scheduledSparkApplications) Create(scheduledSparkApplication *v1alpha1.
 		Namespace(c.ns).
 		Resource("scheduledsparkapplications").
 		Body(scheduledSparkApplication).
-		Do().
+		Do(context.Background()).
 		Into(result)
 	return
 }
@@ -117,7 +118,7 @@ func (c *scheduledSparkApplications) Update(scheduledSparkApplication *v1alpha1.
 		Resource("scheduledsparkapplications").
 		Name(scheduledSparkApplication.Name).
 		Body(scheduledSparkApplication).
-		Do().
+		Do(context.Background()).
 		Into(result)
 	return
 }
@@ -129,7 +130,7 @@ func (c *scheduledSparkApplications) Delete(name string, options *v1.DeleteOptio
 		Resource("scheduledsparkapplications").
 		Name(name).
 		Body(options).
-		Do().
+		Do(context.Background()).
 		Error()
 }
 
@@ -140,7 +141,7 @@ func (c *scheduledSparkApplications) DeleteCollection(options *v1.DeleteOptions,
 		Resource("scheduledsparkapplications").
 		VersionedParams(&listOptions, scheme.ParameterCodec).
 		Body(options).
-		Do().
+		Do(context.Background()).
 		Error()
 }
 
@@ -153,7 +154,7 @@ func (c *scheduledSparkApplications) Patch(name string, pt types.PatchType, data
 		SubResource(subresources...).
 		Name(name).
 		Body(data).
-		Do().
+		Do(context.Background()).
 		Into(result)
 	return
 }

@@ -15,6 +15,7 @@
 package commands
 
 import (
+	"context"
 	"fmt"
 	commonv1 "github.com/kubeflow/arena/pkg/operators/tf-operator/apis/common/v1"
 	"strings"
@@ -368,7 +369,7 @@ func (tt *PyTorchJobTrainer) getTrainingJob(name, namespace string) (TrainingJob
 	pytorchjob.Status.Conditions = makeJobStatusSortedByTime(pytorchjob.Status.Conditions)
 
 	// 2. Find the pod list, and determine the pod of the job
-	podList, err := tt.client.CoreV1().Pods(namespace).List(metav1.ListOptions{
+	podList, err := tt.client.CoreV1().Pods(namespace).List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ListOptions",
 			APIVersion: "v1",
@@ -497,7 +498,7 @@ func (tt *PyTorchJobTrainer) resources(name string, namespace string, pods []v1.
 	resources := []Resource{}
 
 	// 2. Find the pod list, and determine the pod of the job
-	stsList, err := tt.client.AppsV1().StatefulSets(namespace).List(metav1.ListOptions{
+	stsList, err := tt.client.AppsV1().StatefulSets(namespace).List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ListOptions",
 			APIVersion: "v1",
@@ -515,7 +516,7 @@ func (tt *PyTorchJobTrainer) resources(name string, namespace string, pods []v1.
 	}
 
 	// 2. Find the pod list, and determine the pod of the job
-	jobs, err := tt.client.BatchV1().Jobs(namespace).List(metav1.ListOptions{
+	jobs, err := tt.client.BatchV1().Jobs(namespace).List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ListOptions",
 			APIVersion: "v1",

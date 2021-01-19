@@ -15,6 +15,7 @@
 package commands
 
 import (
+	"context"
 	"fmt"
 	"sort"
 	"strings"
@@ -369,7 +370,7 @@ func (tt *TensorFlowJobTrainer) getTrainingJob(name, namespace string) (Training
 	tfjob.Status.Conditions = makeJobStatusSortedByTime(tfjob.Status.Conditions)
 
 	// 2. Find the pod list, and determine the pod of the job
-	podList, err := tt.client.CoreV1().Pods(namespace).List(metav1.ListOptions{
+	podList, err := tt.client.CoreV1().Pods(namespace).List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ListOptions",
 			APIVersion: "v1",

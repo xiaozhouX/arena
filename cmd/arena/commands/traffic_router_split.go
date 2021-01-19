@@ -15,6 +15,7 @@
 package commands
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -347,7 +348,7 @@ func createOrUpdateDestinationRule(istioClient *rest.RESTClient, preprocessObjec
 	request.SetHeader("Accept", "application/json")
 	request.SetHeader("Content-Type", "application/json")
 	log.Debugf("request URL: %s", request.URL())
-	result2, err := request.Do().Raw()
+	result2, err := request.Do(context.Background()).Raw()
 	if err != nil {
 		log.Debugf("will create new destinationrule \"%s\"", destinationRuleName)
 		convertedjson, err := json.Marshal(preprocessObject.DestinationRule)
@@ -358,7 +359,7 @@ func createOrUpdateDestinationRule(istioClient *rest.RESTClient, preprocessObjec
 		}
 		postRequest := istioClient.Post().Namespace(preprocessObject.Namespace).Resource("destinationrules")
 		log.Debugf("postRequest URL: %s", postRequest.URL())
-		newbody, err := postRequest.Body(convertedjson).Do().Raw()
+		newbody, err := postRequest.Body(convertedjson).Do(context.Background()).Raw()
 		if err == nil {
 			log.Debugf(string(newbody))
 		} else {
@@ -381,7 +382,7 @@ func createOrUpdateDestinationRule(istioClient *rest.RESTClient, preprocessObjec
 
 		updateRequest := istioClient.Put().Namespace(preprocessObject.Namespace).Resource("destinationrules").Name(destinationRuleName)
 		log.Debugf("updateRequest URL: %s", updateRequest.URL())
-		newbody, err := updateRequest.Body(updatedjson).Do().Raw()
+		newbody, err := updateRequest.Body(updatedjson).Do(context.Background()).Raw()
 		if err == nil {
 			log.Debugf(string(newbody))
 		} else {
@@ -398,7 +399,7 @@ func createOrUpdateVirtualService(istioClient *rest.RESTClient, preprocessObject
 	request.SetHeader("Accept", "application/json")
 	request.SetHeader("Content-Type", "application/json")
 	log.Debugf("request URL: %s", request.URL())
-	result2, err := request.Do().Raw()
+	result2, err := request.Do(context.Background()).Raw()
 	if err != nil {
 		log.Debugf("will create new virtualservice \"%s\"", virtualServiceName)
 		convertedjson, err := json.Marshal(preprocessObject.VirtualService)
@@ -407,7 +408,7 @@ func createOrUpdateVirtualService(istioClient *rest.RESTClient, preprocessObject
 		} else {
 			return err
 		}
-		newbody, err := istioClient.Post().Namespace(namespace).Resource("virtualservices").Body(convertedjson).Do().Raw()
+		newbody, err := istioClient.Post().Namespace(namespace).Resource("virtualservices").Body(convertedjson).Do(context.Background()).Raw()
 		if err == nil {
 			log.Debugf(string(newbody))
 		} else {
@@ -428,7 +429,7 @@ func createOrUpdateVirtualService(istioClient *rest.RESTClient, preprocessObject
 			return err
 		}
 
-		newbody, err := istioClient.Put().Namespace(namespace).Resource("virtualservices").Name(virtualServiceName).Body(updatedjson).Do().Raw()
+		newbody, err := istioClient.Put().Namespace(namespace).Resource("virtualservices").Name(virtualServiceName).Body(updatedjson).Do(context.Background()).Raw()
 		if err == nil {
 			log.Debugf(string(newbody))
 		} else {
@@ -492,7 +493,7 @@ func initIstioClient() (*rest.RESTClient, error) {
 			return nil
 		})
 	err = schemeBuilder.AddToScheme(types)
-	restConfig.NegotiatedSerializer = serializer.DirectCodecFactory{CodecFactory: serializer.NewCodecFactory(types)}
+	restConfig.NegotiatedSerializer = serializer.NewCodecFactory(types).WithoutConversion()
 	// create the clientset
 
 	return rest.RESTClientFor(restConfig)

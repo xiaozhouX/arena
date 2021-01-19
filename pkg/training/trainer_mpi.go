@@ -15,6 +15,7 @@
 package training
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -302,7 +303,7 @@ func (tt *MPIJobTrainer) getTrainingJob(name, namespace string) (TrainingJob, er
 	job := tt.getChiefJob(name, namespace)
 
 	// 2. Find the pod list, and determine the pod of the job
-	podList, err := tt.client.CoreV1().Pods(namespace).List(metav1.ListOptions{
+	podList, err := tt.client.CoreV1().Pods(namespace).List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ListOptions",
 			APIVersion: "v1",
@@ -373,7 +374,7 @@ func (tt *MPIJobTrainer) getTrainingJobFromCache(name, namespace string) (Traini
 
 func (tt *MPIJobTrainer) getChiefJob(name string, namespace string) (job batchv1.Job) {
 	// try to search batch job of the mpijob, it may be name or name-mpijob
-	jobList, err := tt.client.BatchV1().Jobs(namespace).List(metav1.ListOptions{
+	jobList, err := tt.client.BatchV1().Jobs(namespace).List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ListOptions",
 			APIVersion: "v1",
@@ -389,7 +390,7 @@ func (tt *MPIJobTrainer) getChiefJob(name string, namespace string) (job batchv1
 		log.Debugf("mpijob list failed due to %v with mpi_job_name=%s", err, name)
 	}
 
-	jobList, err = tt.client.BatchV1().Jobs(namespace).List(metav1.ListOptions{
+	jobList, err = tt.client.BatchV1().Jobs(namespace).List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ListOptions",
 			APIVersion: "v1",
@@ -467,7 +468,7 @@ func (tt *MPIJobTrainer) resources(name string, namespace string, pods []*v1.Pod
 	resources := []Resource{}
 
 	// 2. Find the pod list, and determine the pod of the job
-	stsList, err := tt.client.AppsV1().StatefulSets(namespace).List(metav1.ListOptions{
+	stsList, err := tt.client.AppsV1().StatefulSets(namespace).List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ListOptions",
 			APIVersion: "v1",
@@ -485,7 +486,7 @@ func (tt *MPIJobTrainer) resources(name string, namespace string, pods []*v1.Pod
 	}
 
 	// 2. Find the pod list, and determine the pod of the job
-	jobs, err := tt.client.BatchV1().Jobs(namespace).List(metav1.ListOptions{
+	jobs, err := tt.client.BatchV1().Jobs(namespace).List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ListOptions",
 			APIVersion: "v1",
@@ -530,7 +531,7 @@ func (tt *MPIJobTrainer) listFromAPIServer(namespace string, allNamespace bool) 
 	}
 	for _, item := range mpijobList.Items {
 		mpijob := item.DeepCopy()
-		podList, err := tt.client.CoreV1().Pods(mpijob.Namespace).List(metav1.ListOptions{
+		podList, err := tt.client.CoreV1().Pods(mpijob.Namespace).List(context.Background(), metav1.ListOptions{
 			TypeMeta: metav1.TypeMeta{
 				Kind:       "ListOptions",
 				APIVersion: "v1",

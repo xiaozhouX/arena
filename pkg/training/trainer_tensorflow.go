@@ -15,6 +15,7 @@
 package training
 
 import (
+	"context"
 	"fmt"
 	"sort"
 	"strings"
@@ -316,7 +317,7 @@ func (tt *TensorFlowJobTrainer) getTrainingJob(name, namespace string) (Training
 	}
 	// 2.get the pods of the job
 	allPods := []*v1.Pod{}
-	podList, err := tt.client.CoreV1().Pods(namespace).List(metav1.ListOptions{
+	podList, err := tt.client.CoreV1().Pods(namespace).List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ListOptions",
 			APIVersion: "v1",
@@ -442,7 +443,7 @@ func (tt *TensorFlowJobTrainer) listFromAPIServer(namespace string, allNamespace
 	}
 	for _, job := range tfjobList.Items {
 		tfjob := job.DeepCopy()
-		podList, err := tt.client.CoreV1().Pods(tfjob.Namespace).List(metav1.ListOptions{
+		podList, err := tt.client.CoreV1().Pods(tfjob.Namespace).List(context.Background(), metav1.ListOptions{
 			TypeMeta: metav1.TypeMeta{
 				Kind:       "ListOptions",
 				APIVersion: "v1",

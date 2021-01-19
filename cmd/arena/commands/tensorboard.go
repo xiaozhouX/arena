@@ -15,6 +15,7 @@
 package commands
 
 import (
+	"context"
 	"fmt"
 	"path"
 	"strings"
@@ -70,7 +71,7 @@ func tensorboardURL(name, namespace string) (url string, err error) {
 	)
 
 	// 1. Get port
-	serviceList, err := clientset.CoreV1().Services(namespace).List(metav1.ListOptions{
+	serviceList, err := clientset.CoreV1().Services(namespace).List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ListOptions",
 			APIVersion: "v1",
@@ -111,7 +112,7 @@ func tensorboardURL(name, namespace string) (url string, err error) {
 	port = portList[0].NodePort
 
 	// 2. Get address
-	nodeList, err := clientset.CoreV1().Nodes().List(metav1.ListOptions{})
+	nodeList, err := clientset.CoreV1().Nodes().List(context.Background(), metav1.ListOptions{})
 	if err != nil {
 		return "", err
 	}

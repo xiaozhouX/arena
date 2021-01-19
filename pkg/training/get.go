@@ -15,6 +15,7 @@
 package training
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
@@ -265,7 +266,7 @@ func printEvents(lines []string, namespace string, resouces []Resource) []string
 // Get Event of the Job
 func GetResourcesEvents(client *kubernetes.Clientset, namespace string, resources []Resource) (map[string][]v1.Event, error) {
 	eventMap := make(map[string][]v1.Event)
-	events, err := client.CoreV1().Events(namespace).List(metav1.ListOptions{})
+	events, err := client.CoreV1().Events(namespace).List(context.Background(), metav1.ListOptions{})
 	if err != nil {
 		return eventMap, err
 	}

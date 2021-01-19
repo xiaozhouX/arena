@@ -15,6 +15,7 @@
 package training
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/kubeflow/arena/pkg/apis/config"
@@ -269,7 +270,7 @@ func (h *HorovodJobTrainer) GetTrainingJob(name, namespace string) (tj TrainingJ
 
 func (h *HorovodJobTrainer) getTrainingJob(name, namespace string) (TrainingJob, error) {
 	// 1. Get the batchJob of training Job
-	jobList, err := h.client.BatchV1().Jobs(namespace).List(metav1.ListOptions{
+	jobList, err := h.client.BatchV1().Jobs(namespace).List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ListOptions",
 			APIVersion: "v1",
@@ -283,7 +284,7 @@ func (h *HorovodJobTrainer) getTrainingJob(name, namespace string) (TrainingJob,
 	}
 	job := jobList.Items[0]
 	// 2. Find the pod list, and determine the pod of the job
-	podList, err := h.client.CoreV1().Pods(namespace).List(metav1.ListOptions{
+	podList, err := h.client.CoreV1().Pods(namespace).List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ListOptions",
 			APIVersion: "v1",
@@ -363,7 +364,7 @@ func (h *HorovodJobTrainer) listFromAPIServer(namespace string, allNamespace boo
 	}
 	trainingJobs := []TrainingJob{}
 	// 1. Get the batchJob of training Job
-	jobList, err := h.client.BatchV1().Jobs(namespace).List(metav1.ListOptions{
+	jobList, err := h.client.BatchV1().Jobs(namespace).List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ListOptions",
 			APIVersion: "v1",
@@ -375,7 +376,7 @@ func (h *HorovodJobTrainer) listFromAPIServer(namespace string, allNamespace boo
 	for _, item := range jobList.Items {
 		job := item.DeepCopy()
 		// 2. Find the pod list, and determine the pod of the job
-		podList, err := h.client.CoreV1().Pods(job.Namespace).List(metav1.ListOptions{
+		podList, err := h.client.CoreV1().Pods(job.Namespace).List(context.Background(), metav1.ListOptions{
 			TypeMeta: metav1.TypeMeta{
 				Kind:       "ListOptions",
 				APIVersion: "v1",

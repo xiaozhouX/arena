@@ -1,6 +1,7 @@
 package topnode
 
 import (
+	"context"
 	"fmt"
 	"sort"
 	"strings"
@@ -216,11 +217,11 @@ func BuildNodes(nodeNames []string, targetNodeType types.NodeType) ([]Node, erro
 	if err != nil {
 		return nil, err
 	}
-	nodeList, err := client.CoreV1().Nodes().List(metav1.ListOptions{})
+	nodeList, err := client.CoreV1().Nodes().List(context.Background(), metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
-	configMapList, err := client.CoreV1().ConfigMaps("kube-system").List(metav1.ListOptions{
+	configMapList, err := client.CoreV1().ConfigMaps("kube-system").List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ListOptions",
 			APIVersion: "v1",

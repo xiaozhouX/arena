@@ -21,6 +21,7 @@ limitations under the License.
 package v1beta1
 
 import (
+	"context"
 	v1beta1 "github.com/kubeflow/arena/pkg/operators/spark-operator/apis/sparkoperator.k8s.io/v1beta1"
 	scheme "github.com/kubeflow/arena/pkg/operators/spark-operator/client/clientset/versioned/scheme"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -70,7 +71,7 @@ func (c *sparkApplications) Get(name string, options v1.GetOptions) (result *v1b
 		Resource("sparkapplications").
 		Name(name).
 		VersionedParams(&options, scheme.ParameterCodec).
-		Do().
+		Do(context.Background()).
 		Into(result)
 	return
 }
@@ -82,7 +83,7 @@ func (c *sparkApplications) List(opts v1.ListOptions) (result *v1beta1.SparkAppl
 		Namespace(c.ns).
 		Resource("sparkapplications").
 		VersionedParams(&opts, scheme.ParameterCodec).
-		Do().
+		Do(context.Background()).
 		Into(result)
 	return
 }
@@ -94,7 +95,7 @@ func (c *sparkApplications) Watch(opts v1.ListOptions) (watch.Interface, error) 
 		Namespace(c.ns).
 		Resource("sparkapplications").
 		VersionedParams(&opts, scheme.ParameterCodec).
-		Watch()
+		Watch(context.Background())
 }
 
 // Create takes the representation of a sparkApplication and creates it.  Returns the server's representation of the sparkApplication, and an error, if there is any.
@@ -104,7 +105,7 @@ func (c *sparkApplications) Create(sparkApplication *v1beta1.SparkApplication) (
 		Namespace(c.ns).
 		Resource("sparkapplications").
 		Body(sparkApplication).
-		Do().
+		Do(context.Background()).
 		Into(result)
 	return
 }
@@ -117,7 +118,7 @@ func (c *sparkApplications) Update(sparkApplication *v1beta1.SparkApplication) (
 		Resource("sparkapplications").
 		Name(sparkApplication.Name).
 		Body(sparkApplication).
-		Do().
+		Do(context.Background()).
 		Into(result)
 	return
 }
@@ -129,7 +130,7 @@ func (c *sparkApplications) Delete(name string, options *v1.DeleteOptions) error
 		Resource("sparkapplications").
 		Name(name).
 		Body(options).
-		Do().
+		Do(context.Background()).
 		Error()
 }
 
@@ -140,7 +141,7 @@ func (c *sparkApplications) DeleteCollection(options *v1.DeleteOptions, listOpti
 		Resource("sparkapplications").
 		VersionedParams(&listOptions, scheme.ParameterCodec).
 		Body(options).
-		Do().
+		Do(context.Background()).
 		Error()
 }
 
@@ -153,7 +154,7 @@ func (c *sparkApplications) Patch(name string, pt types.PatchType, data []byte, 
 		SubResource(subresources...).
 		Name(name).
 		Body(data).
-		Do().
+		Do(context.Background()).
 		Into(result)
 	return
 }

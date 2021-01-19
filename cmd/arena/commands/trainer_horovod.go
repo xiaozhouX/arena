@@ -15,6 +15,7 @@
 package commands
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/kubeflow/arena/pkg/types"
@@ -134,7 +135,7 @@ func (m *HorovodJobTrainer) IsSupported(name, ns string) bool {
 			}
 		}
 	} else {
-		jobList, err := m.client.BatchV1().Jobs(ns).List(metav1.ListOptions{
+		jobList, err := m.client.BatchV1().Jobs(ns).List(context.Background(), metav1.ListOptions{
 			TypeMeta: metav1.TypeMeta{
 				Kind:       "ListOptions",
 				APIVersion: "v1",
@@ -175,7 +176,7 @@ func (m *HorovodJobTrainer) getTrainingJob(name, namespace string) (TrainingJob,
 
 	// 1. Get the batchJob of training Job
 	pods := []v1.Pod{}
-	jobList, err := m.client.BatchV1().Jobs(namespace).List(metav1.ListOptions{
+	jobList, err := m.client.BatchV1().Jobs(namespace).List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ListOptions",
 			APIVersion: "v1",
@@ -192,7 +193,7 @@ func (m *HorovodJobTrainer) getTrainingJob(name, namespace string) (TrainingJob,
 	}
 
 	// 2. Find the pod list, and determine the pod of the job
-	podList, err := m.client.CoreV1().Pods(namespace).List(metav1.ListOptions{
+	podList, err := m.client.CoreV1().Pods(namespace).List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ListOptions",
 			APIVersion: "v1",

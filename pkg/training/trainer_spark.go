@@ -1,6 +1,7 @@
 package training
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"time"
@@ -332,7 +333,7 @@ func (st *SparkJobTrainer) getTrainingJob(name, namespace string) (TrainingJob, 
 		}
 		return nil, err
 	}
-	podList, err := st.client.CoreV1().Pods(namespace).List(metav1.ListOptions{
+	podList, err := st.client.CoreV1().Pods(namespace).List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ListOptions",
 			APIVersion: "v1",
@@ -381,7 +382,7 @@ func (st *SparkJobTrainer) listFromAPIServer(namespace string, allNamespace bool
 	}
 	for _, item := range sparkJobList.Items {
 		sparkjob := item.DeepCopy()
-		podList, err := st.client.CoreV1().Pods(sparkjob.Namespace).List(metav1.ListOptions{
+		podList, err := st.client.CoreV1().Pods(sparkjob.Namespace).List(context.Background(), metav1.ListOptions{
 			TypeMeta: metav1.TypeMeta{
 				Kind:       "ListOptions",
 				APIVersion: "v1",

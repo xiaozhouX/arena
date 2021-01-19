@@ -15,6 +15,7 @@
 package commands
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -94,7 +95,7 @@ func ListServing(client *kubernetes.Clientset) ([]servejob.Serving, error) {
 	jobs := []servejob.Serving{}
 	ns := GetNamespace()
 	serviceNameLabel := "servingName"
-	deployments, err := client.AppsV1().Deployments(ns).List(metav1.ListOptions{
+	deployments, err := client.AppsV1().Deployments(ns).List(context.Background(), metav1.ListOptions{
 		LabelSelector: serviceNameLabel,
 	})
 	if err != nil {
@@ -120,7 +121,7 @@ func ListServing(client *kubernetes.Clientset) ([]servejob.Serving, error) {
 func ListServingsByName(client *kubernetes.Clientset, name string) (servings []servejob.Serving, err error) {
 	ns := GetNamespace()
 	labels := fmt.Sprintf("servingName=%s", name)
-	deployList, err := client.AppsV1().Deployments(ns).List(metav1.ListOptions{
+	deployList, err := client.AppsV1().Deployments(ns).List(context.Background(), metav1.ListOptions{
 		LabelSelector: labels,
 	})
 	if err != nil {

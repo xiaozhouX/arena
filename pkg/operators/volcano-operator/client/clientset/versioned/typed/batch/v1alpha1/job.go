@@ -17,6 +17,7 @@ limitations under the License.
 package v1alpha1
 
 import (
+	"context"
 	v1alpha1 "github.com/kubeflow/arena/pkg/operators/volcano-operator/apis/batch/v1alpha1"
 	scheme "github.com/kubeflow/arena/pkg/operators/volcano-operator/client/clientset/versioned/scheme"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -67,7 +68,7 @@ func (c *jobs) Get(name string, options v1.GetOptions) (result *v1alpha1.Job, er
 		Resource("jobs").
 		Name(name).
 		VersionedParams(&options, scheme.ParameterCodec).
-		Do().
+		Do(context.Background()).
 		Into(result)
 	return
 }
@@ -79,7 +80,7 @@ func (c *jobs) List(opts v1.ListOptions) (result *v1alpha1.JobList, err error) {
 		Namespace(c.ns).
 		Resource("jobs").
 		VersionedParams(&opts, scheme.ParameterCodec).
-		Do().
+		Do(context.Background()).
 		Into(result)
 	return
 }
@@ -91,7 +92,7 @@ func (c *jobs) Watch(opts v1.ListOptions) (watch.Interface, error) {
 		Namespace(c.ns).
 		Resource("jobs").
 		VersionedParams(&opts, scheme.ParameterCodec).
-		Watch()
+		Watch(context.Background())
 }
 
 // Create takes the representation of a job and creates it.  Returns the server's representation of the job, and an error, if there is any.
@@ -101,7 +102,7 @@ func (c *jobs) Create(job *v1alpha1.Job) (result *v1alpha1.Job, err error) {
 		Namespace(c.ns).
 		Resource("jobs").
 		Body(job).
-		Do().
+		Do(context.Background()).
 		Into(result)
 	return
 }
@@ -114,7 +115,7 @@ func (c *jobs) Update(job *v1alpha1.Job) (result *v1alpha1.Job, err error) {
 		Resource("jobs").
 		Name(job.Name).
 		Body(job).
-		Do().
+		Do(context.Background()).
 		Into(result)
 	return
 }
@@ -130,7 +131,7 @@ func (c *jobs) UpdateStatus(job *v1alpha1.Job) (result *v1alpha1.Job, err error)
 		Name(job.Name).
 		SubResource("status").
 		Body(job).
-		Do().
+		Do(context.Background()).
 		Into(result)
 	return
 }
@@ -142,7 +143,7 @@ func (c *jobs) Delete(name string, options *v1.DeleteOptions) error {
 		Resource("jobs").
 		Name(name).
 		Body(options).
-		Do().
+		Do(context.Background()).
 		Error()
 }
 
@@ -153,7 +154,7 @@ func (c *jobs) DeleteCollection(options *v1.DeleteOptions, listOptions v1.ListOp
 		Resource("jobs").
 		VersionedParams(&listOptions, scheme.ParameterCodec).
 		Body(options).
-		Do().
+		Do(context.Background()).
 		Error()
 }
 
@@ -166,7 +167,7 @@ func (c *jobs) Patch(name string, pt types.PatchType, data []byte, subresources 
 		SubResource(subresources...).
 		Name(name).
 		Body(data).
-		Do().
+		Do(context.Background()).
 		Into(result)
 	return
 }

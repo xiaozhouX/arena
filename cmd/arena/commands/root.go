@@ -15,6 +15,7 @@
 package commands
 
 import (
+	"context"
 	"os"
 
 	datacommand "github.com/kubeflow/arena/pkg/commands/data"
@@ -112,12 +113,12 @@ func createNamespace(client *kubernetes.Clientset, namespace string) error {
 			Name: namespace,
 		},
 	}
-	_, err := client.Core().Namespaces().Create(ns)
+	_, err := client.CoreV1().Namespaces().Create(context.Background(), ns, metav1.CreateOptions{})
 	return err
 }
 
 func getNamespace(client *kubernetes.Clientset, namespace string) (*v1.Namespace, error) {
-	return client.Core().Namespaces().Get(namespace, metav1.GetOptions{})
+	return client.CoreV1().Namespaces().Get(context.Background(), namespace, metav1.GetOptions{})
 }
 
 func ensureNamespace(client *kubernetes.Clientset, namespace string) error {

@@ -15,6 +15,7 @@
 package commands
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"regexp"
@@ -203,7 +204,7 @@ func (serveTensorFlowArgs *ServeTensorFlowArgs) preprocess(client *kubernetes.Cl
 }
 
 func checkServiceExists(client *kubernetes.Clientset, namespace string, name string) (found bool, err error) {
-	service, err := client.CoreV1().Services(namespace).Get(name, metav1.GetOptions{})
+	service, err := client.CoreV1().Services(namespace).Get(context.Background(), name, metav1.GetOptions{})
 
 	if err != nil {
 		if errors.IsNotFound(err) {

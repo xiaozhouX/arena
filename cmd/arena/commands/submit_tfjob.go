@@ -15,6 +15,7 @@
 package commands
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -395,7 +396,7 @@ func (submitArgs *submitTFJobArgs) addConfigFiles() error {
 func (submitArgs *submitTFJobArgs) checkGangCapablitiesInCluster() {
 	gangCapablity := false
 	if clientset != nil {
-		_, err := clientset.AppsV1beta1().Deployments(metav1.NamespaceSystem).Get(gangSchdName, metav1.GetOptions{})
+		_, err := clientset.AppsV1beta1().Deployments(metav1.NamespaceSystem).Get(context.Background(), gangSchdName, metav1.GetOptions{})
 		if err != nil {
 			log.Debugf("Failed to find %s due to %v", gangSchdName, err)
 		} else {

@@ -15,6 +15,7 @@
 package training
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -314,7 +315,7 @@ func (tt *PyTorchJobTrainer) getTrainingJob(name, namespace string) (TrainingJob
 		return nil, fmt.Errorf("failed to find job %v,reason: %v", name, err)
 	}
 	// 2. Find the pod list, and determine the pod of the job
-	podList, err := tt.client.CoreV1().Pods(namespace).List(metav1.ListOptions{
+	podList, err := tt.client.CoreV1().Pods(namespace).List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ListOptions",
 			APIVersion: "v1",
@@ -400,7 +401,7 @@ func (tt *PyTorchJobTrainer) resources(name string, namespace string, pods []*v1
 	resources := []Resource{}
 
 	// 2. Find the pod list, and determine the pod of the job
-	stsList, err := tt.client.AppsV1().StatefulSets(namespace).List(metav1.ListOptions{
+	stsList, err := tt.client.AppsV1().StatefulSets(namespace).List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ListOptions",
 			APIVersion: "v1",
@@ -418,7 +419,7 @@ func (tt *PyTorchJobTrainer) resources(name string, namespace string, pods []*v1
 	}
 
 	// 2. Find the pod list, and determine the pod of the job
-	jobs, err := tt.client.BatchV1().Jobs(namespace).List(metav1.ListOptions{
+	jobs, err := tt.client.BatchV1().Jobs(namespace).List(context.Background(), metav1.ListOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ListOptions",
 			APIVersion: "v1",
@@ -463,7 +464,7 @@ func (tt *PyTorchJobTrainer) listFromAPIServer(namespace string, allNamespace bo
 	}
 	for _, job := range pyjobList.Items {
 		pyjob := job.DeepCopy()
-		podList, err := tt.client.CoreV1().Pods(pyjob.Namespace).List(metav1.ListOptions{
+		podList, err := tt.client.CoreV1().Pods(pyjob.Namespace).List(context.Background(), metav1.ListOptions{
 			TypeMeta: metav1.TypeMeta{
 				Kind:       "ListOptions",
 				APIVersion: "v1",
