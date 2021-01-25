@@ -23,6 +23,8 @@ const (
 	NVIDIAGPUResourceName = "nvidia.com/gpu"
 	// GPUShareResourceName is the gpushare resource name
 	GPUShareResourceName = "aliyun.com/gpu-mem"
+	// GPUShareResourceName is the gpushare resource name
+	AliyunGPUResourceName = "aliyun.com/gpu"
 
 	DeprecatedNVIDIAGPUResourceName = "alpha.kubernetes.io/nvidia-gpu"
 

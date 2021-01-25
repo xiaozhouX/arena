@@ -44,14 +44,14 @@ type TrainingJobSpec struct {
 }
 
 type ETReplicaSpecs struct {
-	Launcher *common.ReplicaSpec `json:"Launcher"`
-	Worker   *ETReplicaSpec      `json:"Worker"`
+	Launcher *common.ReplicaSpec `json:"launcher"`
+	Worker   *ETReplicaSpec      `json:"worker"`
 }
 
 type ETReplicaSpec struct {
 	// Replicas is the desired number of replicas of the given template.
 	// If unspecified, defaults to 1.
-	Replicas *int32 `json:"Replicas,omitempty"`
+	Replicas *int32 `json:"replicas,omitempty"`
 
 	// MaxReplicas is the desired max number of replicas of the given template.
 	// If unspecified, MaxReplicas defaults to infinite.
@@ -83,10 +83,15 @@ const (
 	ETReplicaTypeWorker ETReplicaType = "Worker"
 )
 
+
 // TrainingJobStatus defines the observed state of TrainingJob
 type TrainingJobStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	common.JobStatus `json:",inline"`
+
+	TargetWorkers  []string `json:"targetWorkers,omitempty"`
+	CurrentWorkers []string `json:"currentWorkers,omitempty"`
 }
 
 // +genclient
@@ -108,7 +113,7 @@ type TrainingJob struct {
 
 	// Most recently observed status of the PyTorchJob.
 	// Read-only (modified by the system).
-	Status common.JobStatus `json:"status,omitempty"`
+	Status TrainingJobStatus `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true

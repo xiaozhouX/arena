@@ -18,6 +18,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/kubeflow/arena/pkg/operators/et-operator/api/common"
 	"strings"
 	"time"
 
@@ -143,17 +144,23 @@ func (ej *ETJob) Duration() time.Duration {
 
 // Requested GPU count of the Job
 func (ej *ETJob) RequestedGPU() int64 {
-	if ej.requestedGPU > 0 {
-		return ej.requestedGPU
+	var requestedGPU int64 = 0
+	job := ej.trainingjob
+	if status, ok := job.Status.ReplicaStatuses[common.ReplicaType(v1alpha1.ETReplicaTypeWorker)]; ok {
+		if job.Spec.ETReplicaSpecs.Worker != nil {
+			total := status.Succeeded + status.Failed + status.Active
+			gpuCountPerWorker := gpuInPodSpec(job.Spec.ETReplicaSpecs.Worker.Template.Spec)
+			requestedGPU += gpuCountPerWorker * int64(total)
+		}
 	}
-	requestGPUs := getRequestGPUsOfJobFromPodAnnotation(ej.pods)
-	if requestGPUs > 0 {
-		return requestGPUs
+	if status, ok := job.Status.ReplicaStatuses[common.ReplicaType(v1alpha1.ETReplicaTypeLauncher)]; ok {
+		if job.Spec.ETReplicaSpecs.Launcher != nil {
+			total := status.Succeeded + status.Failed + status.Active
+			gpuCountPerWorker := gpuInPodSpec(job.Spec.ETReplicaSpecs.Launcher.Template.Spec)
+			requestedGPU += gpuCountPerWorker * int64(total)
+		}
 	}
-	for _, pod := range ej.pods {
-		ej.requestedGPU += gpuInPod(*pod)
-	}
-	return ej.requestedGPU
+	return requestedGPU
 }
 
 // Requested GPU count of the Job

@@ -67,7 +67,11 @@ func gpuInNodeDeprecated(node v1.Node) int64 {
 }
 
 func gpuInPod(pod v1.Pod) (gpuCount int64) {
-	containers := pod.Spec.Containers
+	return gpuInPodSpec(pod.Spec)
+}
+
+func gpuInPodSpec(spec v1.PodSpec) (gpuCount int64) {
+	containers := spec.Containers
 	for _, container := range containers {
 		gpuCount += gpuInContainer(container)
 	}
@@ -113,11 +117,17 @@ func gpuInActivePod(pod v1.Pod) (gpuCount int64) {
 func gpuInContainer(container v1.Container) int64 {
 	val, ok := container.Resources.Limits[NVIDIAGPUResourceName]
 
-	if !ok {
-		return gpuInContainerDeprecated(container)
+	if ok {
+		return val.Value()
 	}
 
-	return val.Value()
+	val, ok = container.Resources.Limits[AliyunGPUResourceName]
+
+	if ok {
+		return val.Value()
+	}
+
+	return gpuInContainerDeprecated(container)
 }
 
 func gpuInContainerDeprecated(container v1.Container) int64 {
